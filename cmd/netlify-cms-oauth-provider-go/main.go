@@ -12,7 +12,7 @@ import (
 	"github.com/markbates/goth/providers/github"
 	"github.com/markbates/goth/providers/gitlab"
 
-	"./dotenv"
+  "github.com/igk1972/netlify-cms-oauth-provider-go/internal/dotenv"
 )
 
 var (
