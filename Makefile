@@ -48,7 +48,7 @@ GO_FLAGS =
 
 DOCS_FLAGS =
 
-APPS = netlify-cms-oauth-provider-go
+APPS = netlify-cms-oauth-provider
 
 
 all: $(APPS)
