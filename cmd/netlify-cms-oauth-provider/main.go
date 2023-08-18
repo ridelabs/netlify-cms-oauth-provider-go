@@ -109,19 +109,19 @@ func handleSuccess(res http.ResponseWriter, req *http.Request) {
 
 func init() {
 	dotenv.File(".env")
-	if hostEnv, ok := os.LookupEnv("LISTEN_HOST"); ok {
+	if hostEnv, ok := os.LookupEnv("NETLIFY_CMS_OAUTH_PROVIDER_LISTEN_HOST"); ok {
 		listenHost = hostEnv
 	}
 
-	if redirectEnv, ok := os.LookupEnv("EXTERNAL_HOST"); ok {
+	if redirectEnv, ok := os.LookupEnv("NETLIFY_CMS_OAUTH_PROVIDER_EXTERNAL_HOST"); ok {
 		externalHost = redirectEnv
 	}
 	var (
 		gitlabProvider goth.Provider
 	)
-	if gitlabServer, ok := os.LookupEnv("GITLAB_SERVER"); ok {
+	if gitlabServer, ok := os.LookupEnv("NETLIFY_CMS_OAUTH_PROVIDER_GITLAB_SERVER"); ok {
 		gitlabProvider = gitlab.NewCustomisedURL(
-			os.Getenv("GITLAB_KEY"), os.Getenv("GITLAB_SECRET"),
+			os.Getenv("NETLIFY_CMS_OAUTH_PROVIDER_GITLAB_KEY"), os.Getenv("NETLIFY_CMS_OAUTH_PROVIDER_GITLAB_SECRET"),
 			fmt.Sprintf("https://%s/callback/gitlab", externalHost),
 			fmt.Sprintf("https://%s/oauth/authorize", gitlabServer),
 			fmt.Sprintf("https://%s/oauth/token", gitlabServer),
@@ -129,27 +129,27 @@ func init() {
 		)
 	} else {
 		gitlabProvider = gitlab.New(
-			os.Getenv("GITLAB_KEY"), os.Getenv("GITLAB_SECRET"),
+			os.Getenv("NETLIFY_CMS_OAUTH_PROVIDER_GITLAB_KEY"), os.Getenv("NETLIFY_CMS_OAUTH_PROVIDER_GITLAB_SECRET"),
 			fmt.Sprintf("https://%s/callback/gitlab", externalHost),
 		)
 	}
 
 	goth.UseProviders(
 		github.New(
-			os.Getenv("GITHUB_KEY"), os.Getenv("GITHUB_SECRET"),
+			os.Getenv("NETLIFY_CMS_OAUTH_PROVIDER_GITHUB_KEY"), os.Getenv("NETLIFY_CMS_OAUTH_PROVIDER_GITHUB_SECRET"),
 			fmt.Sprintf("https://%s/callback/github", externalHost),
 			"repo",
 		),
 		bitbucket.New(
-			os.Getenv("BITBUCKET_KEY"), os.Getenv("BITBUCKET_SECRET"),
+			os.Getenv("NETLIFY_CMS_OAUTH_PROVIDER_BITBUCKET_KEY"), os.Getenv("NETLIFY_CMS_OAUTH_PROVIDER_BITBUCKET_SECRET"),
 			fmt.Sprintf("https://%s/callback//bitbucket", externalHost),
 		),
 		gitlabProvider,
 		auth0.New(
-			os.Getenv("AUTH0_KEY"), os.Getenv("AUTH0_SECRET"),
+			os.Getenv("NETLIFY_CMS_OAUTH_PROVIDER_AUTH0_KEY"), os.Getenv("NETLIFY_CMS_OAUTH_PROVIDER_AUTH0_SECRET"),
 			//fmt.Sprintf("https://%s/auth/callback/auth0", externalHost),
 			fmt.Sprintf("https://%s/callback/auth0", externalHost),
-			os.Getenv("AUTH0_DOMAIN"),
+			os.Getenv("NETLIFY_CMS_OAUTH_PROVIDER_AUTH0_DOMAIN"),
 		),
 	)
 }
@@ -159,7 +159,7 @@ func main() {
 	router := mux.NewRouter()
 
 	session_secret := "asdfasdfasdf asdflkqwerwqerqwe23434343"
-	os.Setenv("SESSION_SECRET", session_secret)
+	os.Setenv("NETLIFY_CMS_OAUTH_PROVIDER_SESSION_SECRET", session_secret)
 	gothic.Store = sessions.NewCookieStore([]byte(session_secret))
 
 	//router := r.PathPrefix("/auth").Subrouter()
