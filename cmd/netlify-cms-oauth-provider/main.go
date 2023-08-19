@@ -11,7 +11,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/igk1972/netlify-cms-oauth-provider-go/internal/dotenv"
+	"github.com/joho/godotenv"
+	log "github.com/sirupsen/logrus"
+
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 )
@@ -108,7 +110,10 @@ func handleSuccess(res http.ResponseWriter, req *http.Request) {
 }
 
 func init() {
-	dotenv.File(".env")
+	if err := godotenv.Load("/etc/umb.env", ".env"); err != nil {
+		log.Error("failed to load env, trying to continue ", err)
+	}
+
 	if hostEnv, ok := os.LookupEnv("NETLIFY_CMS_OAUTH_PROVIDER_LISTEN_HOST"); ok {
 		listenHost = hostEnv
 	}
